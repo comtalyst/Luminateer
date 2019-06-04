@@ -1,48 +1,12 @@
-/* servoMotionModule.ino
-   A wheeled robot servo module
-   by C.D.Odom on 2.17.2015.  Updated 7.18.17.
-   Personalized by R.D.
-*/
-
+// servoMotionModule.ino by Robin D. on 5/18/2019
+// Modified from servoMotionModule.ino by c.d.odom on 7.18.17
+// The robot that responds to commands signaled by LED(s)
 /*
-************************************************************************
-**          COPY EVERYTHING BELOW INTO YOUR MAIN SKETCH               **
-************************************************************************
-
-// GLOBALS
-const int leftServoPin = 0;               // servo pin for LEFT wheel
-const int rightServoPin = 1;              // servo pin for RIGHT wheel
-const int LEDPin = 13;                    // the onboard LED pin (for diagnostics)
-
-void setup() {
-  pinMode(leftServoPin, OUTPUT);
-  pinMode(rightServoPin, OUTPUT);
-  pinMode(LEDPin, OUTPUT);
-  blinkOK(3);                // a diagnostic tool to let user know all is OK
-}
-
-
-************************************************************************
-**          COPY EVERYTHING ABOVE INTO YOUR MAIN SKETCH               **
-************************************************************************
-*/
-
-/*
- // a quick test of the servomotion module.  Of course, the loop function 
- // cannot be used by a module, so once the module is tested, delete the
- // loop funciton!
-
-void loop() {
-  // a silly test of some of the robot motion commands:
-  forwardFast(200);
-  robotStop(10);       // give the motors time to stop; prevents high current drain
-  reverseFast(200);
-  robotStop(10);
-  rightFast(100);
-  robotStop(10);
-  leftFast(100);
-  delay(2000);         // delay for 2 seconds, then do it again!
-}
+  Copyright Rawin Deeboonchai 2019.
+  All Rights Reserved. No part of these contents
+  may be reproduced, copied, modified or adapted,
+  without the prior written consent of the author(s),
+  unless when used for educational and non-profit purposes.
 */
 
 // Left Servo Pulse Width Constants
@@ -53,14 +17,14 @@ const int left_reverse_slow = 1400;       // CW Slow
 const int left_reverse_fast = 1000;       // CW Fast
 
 // Right Servo Pulse Width Constants
-const int right_forward_fast = 1300;      // CW Fast
+const int right_forward_fast = 1000;      // CW Fast
 const int right_forward_slow = 1400;      // CW Slow
 const int right_stop = 1500;              // Center position
 const int right_reverse_slow = 1600;      // CCW Slow
 const int right_reverse_fast = 1800;      // CCW Fast
 
 
-void blinkOK(int numBlinks) {
+/*void blinkOK(int numBlinks) {
   // blink the onboard LED to let the user know the code was properly uploaded
   for (int i = 0; i < numBlinks; i++) {
     digitalWrite(LEDPin, HIGH);
@@ -68,7 +32,7 @@ void blinkOK(int numBlinks) {
     digitalWrite(LEDPin, LOW);
     delay(250);
   }
-}
+  }*/
 
 void motionFastTest() {
   // a diagnostic test of basic robot motion at high speed

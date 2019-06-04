@@ -1,25 +1,16 @@
-// "SonicRangerModule.ino" by c.d.odom on 8.16.17
-// The SR04 ultrasonic sensor must be powered with 5V!
-
-/*  these need to be added to the globals section and setup() function in the main sketch!
-  // GLOBALS
-  const byte trigPin1 = 5;      // trigger pin for sonic ranger #1
-  const byte echoPin1 = A5;     // echo (data) pin for sonic ranger #1
-  const byte LEDPin = 13;       // onboard LED pin (for diagnostics)
-
-  void setup() {
-  Serial.begin(9600);
-  pinMode(trigPin1, OUTPUT);    // set the pinMode for trigger pin #1
-  pinMode(echoPin1, INPUT);     // set the pinMode for echo pin #1
-  pinMode(LEDPin, OUTPUT);      // set the pinMode for the onboard LED
-  delay(100);       // allow the serial window time to open
-  }
-
+// SonicRangerModule.ino by Robin D. on 5/18/2019
+// Modified from SonicRangerModule.ino by c.d.odom on 8.16.17
+// The robot that responds to commands signaled by LED(s)
+/*
+  Copyright Rawin Deeboonchai 2019.
+  All Rights Reserved. No part of these contents
+  may be reproduced, copied, modified or adapted,
+  without the prior written consent of the author(s),
+  unless when used for educational and non-profit purposes.
 */
 
-
 float sonicRange(byte trigPin, byte echoPin, float maxRange) {
-  // function, with arguments: (trigger pin, echo pin, maximum range (in cm))  
+  // function, with arguments: (trigger pin, echo pin, maximum range (in cm))
   float timeout;                      // # of microseconds sensor will search for object
   long timeRoundTrip;                 // total time (from echo pin) for sound to travel
   float distanceToObject;             // the calculated distance to the object (in cm)
@@ -70,21 +61,63 @@ void sonicDistanceTest(int trigPin, int echoPin, int maxExpectedRange) {
   // Act on the distance reading:
   if (distance == 0) {
     Serial.println("No object is detected.");
-    digitalWrite(LEDPin, LOW);     // turn OFF the LED
+    //    digitalWrite(LEDPin, LOW);     // turn OFF the LED
   }
   else if (distance < 15) {
     Serial.println("Object is near!");
-    digitalWrite(LEDPin, HIGH);    // turn ON the LED
+    //    digitalWrite(LEDPin, HIGH);    // turn ON the LED
   }
   else {
     // object detected between 15cm and maxExpectedRange, therefore blink the LED:
-    digitalWrite(LEDPin, HIGH);    // turn ON the LED
+    //    digitalWrite(LEDPin, HIGH);    // turn ON the LED
     delay(100);                    // some arbitrary delay time
-    digitalWrite(LEDPin, LOW);     // turn OFF the LED
+    //    digitalWrite(LEDPin, LOW);     // turn OFF the LED
     delay(100);                    // some arbitrary delay time
   }
 
   delay(200);      // pause so user can visualize the data
 }
 
-
+float getRangeLeft() {
+  float s1 = sonicRange(leftSonicTrigPin, leftSonicEchoPin, minFar);
+  float s2 = sonicRange(leftSonicTrigPin, leftSonicEchoPin, minFar);
+  float s3 = sonicRange(leftSonicTrigPin, leftSonicEchoPin, minFar);
+  float range = selectRange(s1, s2, s3);
+  if (range == 0) {
+    return 999.0;
+  }
+  return range;
+}
+float getRangeRight() {
+  float s1 = sonicRange(rightSonicTrigPin, rightSonicEchoPin, minFar);
+  float s2 = sonicRange(rightSonicTrigPin, rightSonicEchoPin, minFar);
+  float s3 = sonicRange(rightSonicTrigPin, rightSonicEchoPin, minFar);
+  float range = selectRange(s1, s2, s3);
+  if (range == 0) {
+    return 999.0;
+  }
+  return range;
+}
+float selectRange(float s1, float s2, float s3) {
+  if (s3 < s2) {
+    float tmp = s2;
+    s2 = s3;
+    s3 = tmp;
+  }
+  if (s2 < s1) {
+    float tmp = s1;
+    s1 = s2;
+    s2 = tmp;
+  }
+  if (s3 < s2) {
+    float tmp = s2;
+    s2 = s3;
+    s3 = tmp;
+  }
+  if (s2 - s1 < s3 - s2) {
+    return s1;
+  }
+  else {
+    return s3;
+  }
+}
